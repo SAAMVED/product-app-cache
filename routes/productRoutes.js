@@ -1,0 +1,19 @@
+const express = require("express");
+const controller = require("../controllers/productController");
+const {
+  cacheMiddleware,
+  invalidateCacheMiddleware,
+} = require("../middleware/cache");
+
+const router = express.Router();
+
+// Route -> Middleware -> Controller -> Service -> Database
+router.get("/", cacheMiddleware, controller.getAll);
+router.get("/:id", cacheMiddleware, controller.getById);
+
+router.post("/", invalidateCacheMiddleware, controller.create);
+router.put("/:id", invalidateCacheMiddleware, controller.replace);
+router.patch("/:id", invalidateCacheMiddleware, controller.update);
+router.delete("/:id", invalidateCacheMiddleware, controller.remove);
+
+module.exports = router;
